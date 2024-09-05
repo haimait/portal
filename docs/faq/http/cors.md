@@ -148,3 +148,56 @@ func main() {
 	server.Start()
 }
 ```
+
+
+
+## 自定义复杂的跨域设置示例
+
+示例代码如下：
+
+```go
+package main
+
+import (
+	"flag"
+	"fmt"
+	"net/http"
+	"os"
+
+	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/rest"
+	"github.com/zeromicro/go-zero/rest/httpx"
+)
+
+var configFile = flag.String("f", "etc/core-api-dev.yaml", "the config file")
+
+func main() {
+	flag.Parse()
+
+	var c config.Config
+	conf.MustLoad(*configFile, &c)
+ 
+	# 需要通过的域名，这里可以写多个域名
+	domains := []string{"http://127.0.0.1:8848", "https://go-zero.dev", "http://localhost:8848"}
+	server := rest.MustNewServer(
+		c.RestConf,
+		rest.WithCors(domains...),
+		rest.WithCustomCors(func(header http.Header) {
+			# 这里写允许通过的header key 不区分大小写
+			header.Add("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token,X-Token,X-User-Id, OS, Platform, Version, os, PLATFORM, version")
+			header.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH")
+			header.Set("Access-Control-Expose-Headers", "Content-Length, Content-Type")
+		}, nil, "*"),
+	)
+
+	defer server.Stop()
+
+	ctx := svc.NewServiceContext(c)
+	handler.RegisterHandlers(server, ctx)
+
+	
+	fmt.Printf("Starting admin_user-api server at %s:%d...\n", c.Host, c.Port)
+	server.Start()
+}
+
+```
