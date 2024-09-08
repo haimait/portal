@@ -183,8 +183,8 @@ func main() {
 		rest.WithCors(domains...),
 		rest.WithCustomCors(func(header http.Header) {
 			# 这里写允许通过的header key 不区分大小写
-			header.Add("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token,Authorization,Token,X-Token,X-User-Id,OS,Platform, Version")
-			header.Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS,PATCH")
+			header.Add("Access-Control-Allow-Headers", "Content-Type, AccessToken, X-CSRF-Token, Authorization, Token, X-Token, X-User-Id, OS, Platform, Version")
+			header.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH")
 			header.Set("Access-Control-Expose-Headers", "Content-Length, Content-Type")
 		}, nil, "*"),
 	)
